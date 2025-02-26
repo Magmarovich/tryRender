@@ -136,7 +136,7 @@ calendar_html = """
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                chat_id: YOUR_CHAT_ID, // Замените на ваш chat_id для теста
+                                chat_id: 123456789, // Замените на ваш chat_id для теста
                                 text: "Тестовая дата из Web App: " + selectedDate
                             })
                         }).then(response => console.log("Отправлено в Telegram:", response))
