@@ -22,18 +22,18 @@ calendar_html = """
             align-items: center;
             overflow: hidden;
         }
+        .flatpickr-container {
+            width: 350px;
+        }
         .flatpickr-calendar {
             background: rgba(42, 42, 42, 0.9);
             border: 1px solid #444;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            width: 350px;
+            width: 100%;
             height: 400px;
-            position: absolute;
-            top: 60%; /* Смещаем ниже, чтобы календарь был чуть выше середины */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            overflow: hidden; /* Убираем полосу прокрутки */
+            margin-top: 20px;
+            overflow: hidden;
             max-width: 100%;
             max-height: 100%;
         }
@@ -63,8 +63,8 @@ calendar_html = """
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 5px;
-            height: calc(100% - 80px); /* Точное место для дней, чтобы не было переполнения */
-            overflow: hidden; /* Убираем возможность прокрутки */
+            height: calc(100% - 80px);
+            overflow: hidden;
         }
         .flatpickr-day {
             background: none;
@@ -127,16 +127,19 @@ calendar_html = """
                         window.Telegram.WebApp.close();
                     } else {
                         console.error("Telegram.WebApp недоступен. Пожалуйста, откройте это в Telegram Web App.");
+                        // Для тестирования: отправляем данные через форму (если WebApp недоступен)
+                        alert("Дата выбрана (для тестирования): " + selectedDate);
                     }
                 }
             }
         });
         // Проверка доступности Telegram.WebApp
-        if (!window.Telegram || !window.Telegram.WebApp) {
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            console.log("WebApp инициализирован");
+        } else {
             console.warn("Telegram WebApp API не найден. Убедитесь, что вы используете это в Telegram.");
         }
-        window.Telegram.WebApp.ready();
-        console.log("WebApp инициализирован");
     </script>
 </body>
 </html>
