@@ -112,7 +112,6 @@ calendar_html = """
         <div id="calendar"></div>
     </div>
     <script>
-        let selectedDate = '';
         const calendar = flatpickr("#calendar", {
             inline: true,
             defaultDate: new Date(),
@@ -120,31 +119,13 @@ calendar_html = """
             theme: "dark",
             onChange: function(selectedDates, dateStr) {
                 if (selectedDates.length > 0) {
-                    selectedDate = dateStr;
-                    console.log("Выбрана дата:", selectedDate);
+                    console.log("Выбрана дата:", dateStr);
                     if (window.Telegram && window.Telegram.WebApp) {
-                        window.Telegram.WebApp.sendData(selectedDate);
-                        window.Telegram.WebApp.close();
+                        window.Telegram.WebApp.sendData(dateStr); // Отправляем дату через Telegram WebApp
+                        window.Telegram.WebApp.close(); // Закрываем Web App сразу после выбора
                     } else {
                         console.error("Telegram.WebApp недоступен. Пожалуйста, откройте это в Telegram Web App.");
-                        // Для тестирования: отправляем данные через форму (если WebApp недоступен)
-                        alert("Дата выбрана для тестирования: " + selectedDate);
-                        // Упрощённое тестирование: отправка через fetch с вашим chat_id
-                        fetch('https://api.telegram.org/bot7377705050:AAHDxDRQJV4GoIhRzBxJg_djW-xECC6fxtk/sendMessage', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                chat_id: 421240854, // Замените на ваш реальный chat_id (например, полученный через @userinfobot)
-                                text: "Тестовая дата из Web App: " + selectedDate
-                            })
-                        }).then(response => {
-                            if (!response.ok) {
-                                throw new Error('Ошибка отправки: ' + response.status);
-                            }
-                            console.log("Отправлено в Telegram:", response);
-                        }).catch(error => console.error("Ошибка отправки:", error));
+                        alert("Дата выбрана для тестирования: " + dateStr);
                     }
                 }
             }
