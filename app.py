@@ -17,40 +17,54 @@ calendar_html = """
             margin: 0;
             padding: 0;
             height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
         }
         .flatpickr-calendar {
-            background: #2a2a2a;
+            background: rgba(42, 42, 42, 0.9);
             border: 1px solid #444;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             width: 350px;
-            margin: 0 auto;
+            height: 400px;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            overflow: hidden;
+            max-width: 100%;
+            max-height: 100%;
         }
         .flatpickr-month {
             background: #2a2a2a;
             color: #fff;
             font-size: 20px;
-            padding: 10px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #444;
         }
         .flatpickr-weekdays {
             background: #2a2a2a;
             color: #aaa;
             font-weight: bold;
             padding: 10px 0;
+            border-bottom: 1px solid #444;
         }
         .flatpickr-weekday {
             text-align: center;
+            font-size: 16px;
         }
         .flatpickr-days {
             padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            height: calc(100% - 80px); /* Оставляем место для заголовков */
+            overflow-y: auto;
         }
         .flatpickr-day {
             background: none;
@@ -61,10 +75,12 @@ calendar_html = """
             height: 40px;
             line-height: 40px;
             text-align: center;
-            margin: 5px;
+            margin: 0;
             border-radius: 10px;
-            display: inline-block;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .flatpickr-day:hover {
             border-color: #28a745;
@@ -80,36 +96,45 @@ calendar_html = """
             border-radius: 5px;
             padding: 5px 10px;
             cursor: pointer;
+            font-size: 16px;
         }
         .flatpickr-prev-month:hover, .flatpickr-next-month:hover {
             background: #555;
+        }
+        .flatpickr-day.disabled {
+            color: #666;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
     <div class="flatpickr-container">
-        <div id="calendar"></div> <!-- Прямая инициализация календаря без input -->
+        <div id="calendar"></div>
     </div>
     <script>
         let selectedDate = '';
         const calendar = flatpickr("#calendar", {
-            inline: true, // Открываем календарь сразу, без поля ввода
+            inline: true,
             defaultDate: new Date(),
             dateFormat: "d.m.Y",
             theme: "dark",
             onChange: function(selectedDates, dateStr) {
                 if (selectedDates.length > 0) {
                     selectedDate = dateStr;
-                    console.log("Выбрана дата (формат flatpickr):", dateStr);
+                    console.log("Выбрана дата:", selectedDate);
                     if (window.Telegram && window.Telegram.WebApp) {
-                        window.Telegram.WebApp.sendData(dateStr);
+                        window.Telegram.WebApp.sendData(selectedDate);
                         window.Telegram.WebApp.close();
                     } else {
-                        console.error("Telegram.WebApp не доступен");
+                        console.error("Telegram.WebApp недоступен. Пожалуйста, откройте это в Telegram Web App.");
                     }
                 }
             }
         });
+        // Проверка доступности Telegram.WebApp
+        if (!window.Telegram || !window.Telegram.WebApp) {
+            console.warn("Telegram WebApp API не найден. Убедитесь, что вы используете это в Telegram.");
+        }
         window.Telegram.WebApp.ready();
         console.log("WebApp инициализирован");
     </script>
