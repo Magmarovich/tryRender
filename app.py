@@ -127,14 +127,15 @@ calendar_html = """
                         window.Telegram.WebApp.close();
                     } else {
                         console.error("Telegram.WebApp недоступен. Пожалуйста, откройте это в Telegram Web App.");
-                        // Для тестирования: отправляем данные через форму (если WebApp недоступен)
-                        alert("Дата выбрана (для тестирования): " + selectedDate);
+                        // Для отладки: отправляем данные через форму (если WebApp недоступен)
+                        alert("Дата выбрана для тестирования: " + selectedDate);
                     }
                 }
             }
         });
         // Проверка доступности Telegram.WebApp
         if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.expand(); // Увеличиваем Web App на полный экран
             window.Telegram.WebApp.ready();
             console.log("WebApp инициализирован");
         } else {
