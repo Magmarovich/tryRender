@@ -26,33 +26,57 @@ calendar_html = """
             border: 1px solid #444;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-        .flatpickr-day {
-            color: #fff;
-            font-size: 18px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .flatpickr-day.selected {
-            background: #007bff;
-            border-color: #007bff;
-        }
-        .flatpickr-day:hover {
-            background: #555;
-        }
-        .flatpickr-weekday {
-            color: #aaa;
-            font-weight: bold;
+            width: 350px;
         }
         .flatpickr-month {
             background: #2a2a2a;
             color: #fff;
             font-size: 20px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .flatpickr-weekdays {
+            background: #2a2a2a;
+            color: #aaa;
+            font-weight: bold;
+            padding: 10px 0;
+        }
+        .flatpickr-weekday {
+            text-align: center;
+        }
+        .flatpickr-days {
+            padding: 10px;
+        }
+        .flatpickr-day {
+            background: none;
+            border: 2px solid transparent;
+            color: #fff;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            margin: 5px;
+            border-radius: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .flatpickr-day:hover {
+            border-color: #28a745;
+        }
+        .flatpickr-day.selected {
+            border-color: #28a745;
+            background: #28a745;
+            color: #fff;
         }
         .flatpickr-prev-month, .flatpickr-next-month {
             color: #fff;
             background: #3a3a3a;
             border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
         }
         .flatpickr-prev-month:hover, .flatpickr-next-month:hover {
             background: #555;
@@ -71,18 +95,6 @@ calendar_html = """
         #confirm-btn:hover {
             background-color: #0056b3;
         }
-        /* Добавляем звёзды для стилизации */
-        .flatpickr-day:after {
-            content: '★';
-            position: absolute;
-            font-size: 10px;
-            color: #ffd700;
-            opacity: 0.5;
-            margin-left: 2px;
-        }
-        .flatpickr-day.selected:after {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
@@ -94,26 +106,27 @@ calendar_html = """
         let selectedDate = '';
         const calendar = flatpickr("#calendar", {
             dateFormat: "d.m.Y",
+            defaultDate: new Date(),
             theme: "dark",
             onChange: function(selectedDates, dateStr) {
                 if (selectedDates.length > 0) {
                     selectedDate = dateStr;
                     document.getElementById("confirm-btn").disabled = false;
-                    console.log("Выбрана дата:", selectedDate); // Для отладки
+                    console.log("Выбрана дата (формат flatpickr):", dateStr); // Отладка формата
                 }
             }
         });
         document.getElementById("confirm-btn").addEventListener("click", function() {
             if (selectedDate) {
-                console.log("Отправка даты:", selectedDate); // Для отладки
+                console.log("Отправка даты (формат для бота):", selectedDate); // Отладка перед отправкой
                 window.Telegram.WebApp.sendData(selectedDate);
                 window.Telegram.WebApp.close();
             } else {
-                console.log("Дата не выбрана"); // Для отладки
+                console.log("Дата не выбрана");
             }
         });
         window.Telegram.WebApp.ready();
-        console.log("WebApp инициализирован"); // Для отладки
+        console.log("WebApp инициализирован");
     </script>
 </body>
 </html>
