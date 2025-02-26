@@ -19,7 +19,7 @@ calendar_html = """
             height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center; /* Центрируем по вертикали */
+            align-items: center;
             overflow: hidden;
         }
         .flatpickr-calendar {
@@ -30,7 +30,7 @@ calendar_html = """
             width: 350px;
             height: 400px;
             position: absolute;
-            top: 55%; /* Смещаем ниже, чтобы календарь был ближе к середине с небольшим отступом вниз */
+            top: 60%; /* Смещаем ниже, чтобы календарь был чуть выше середины */
             left: 50%;
             transform: translate(-50%, -50%);
             overflow: hidden; /* Убираем полосу прокрутки */
