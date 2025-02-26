@@ -136,7 +136,7 @@ calendar_html = """
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                chat_id: 123456789, // Замените на ваш реальный chat_id
+                                chat_id: YOUR_CHAT_ID, // Замените на ваш реальный chat_id
                                 text: "Тестовая дата из Web App: " + selectedDate
                             })
                         }).then(response => {
