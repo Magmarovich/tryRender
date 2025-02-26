@@ -127,8 +127,20 @@ calendar_html = """
                         window.Telegram.WebApp.close();
                     } else {
                         console.error("Telegram.WebApp недоступен. Пожалуйста, откройте это в Telegram Web App.");
-                        // Для отладки: отправляем данные через форму (если WebApp недоступен)
+                        // Для тестирования: отправляем данные через форму (если WebApp недоступен)
                         alert("Дата выбрана для тестирования: " + selectedDate);
+                        // Временное решение: отправка через fetch для отладки
+                        fetch('https://api.telegram.org/bot7377705050:AAHDxDRQJV4GoIhRzBxJg_djW-xECC6fxtk/sendMessage', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                chat_id: YOUR_CHAT_ID, // Замените на ваш chat_id для теста
+                                text: "Тестовая дата из Web App: " + selectedDate
+                            })
+                        }).then(response => console.log("Отправлено в Telegram:", response))
+                          .catch(error => console.error("Ошибка отправки:", error));
                     }
                 }
             }
