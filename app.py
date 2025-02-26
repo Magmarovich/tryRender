@@ -2,7 +2,6 @@ from flask import Flask, request, render_template_string
 
 app = Flask(__name__)
 
-# HTML-шаблон с календарём
 calendar_html = """
 <!DOCTYPE html>
 <html>
@@ -16,11 +15,11 @@ calendar_html = """
         flatpickr("#calendar", {
             dateFormat: "d.m.Y",
             onChange: function(selectedDates, dateStr) {
-                window.Telegram.WebApp.sendData(dateStr);  // Отправляем дату в бота
-                window.Telegram.WebApp.close();  // Закрываем Web App
+                window.Telegram.WebApp.sendData(dateStr);
+                window.Telegram.WebApp.close();
             }
         });
-        window.Telegram.WebApp.ready();  // Сообщаем Telegram, что приложение готово
+        window.Telegram.WebApp.ready();
     </script>
 </body>
 </html>
@@ -29,6 +28,3 @@ calendar_html = """
 @app.route('/calendar')
 def calendar():
     return render_template_string(calendar_html)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
