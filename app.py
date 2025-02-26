@@ -9,11 +9,9 @@ calendar_html = """
 <head>
     <!-- Подключаем скрипт Telegram Web Apps -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
-        /* Ваши стили остаются без изменений */
         body {
             background-color: #1a1a1a;
             color: #ffffff;
@@ -116,45 +114,47 @@ calendar_html = """
         <div id="calendar"></div>
     </div>
     <script>
-        // Проверка доступности Telegram.WebApp
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.expand(); // Увеличиваем Web App на полный экран
-            window.Telegram.WebApp.ready();
-            console.log("WebApp инициализирован");
-        } else {
-            console.warn("Telegram WebApp API не найден. Убедитесь, что вы используете это в Telegram.");
-            alert("Пожалуйста, откройте это приложение внутри Telegram.");
+        // Инициализация Telegram WebApp с задержкой для обеспечения доступности
+        function initTelegramWebApp() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.expand(); // Увеличиваем Web App на полный экран
+                window.Telegram.WebApp.ready();
+                console.log("WebApp инициализирован");
+            } else {
+                console.warn("Telegram WebApp API не найден. Пытаемся снова через 1 секунду...");
+                setTimeout(initTelegramWebApp, 1000); // Повторная попытка через 1 секунду
+            }
         }
+
+        // Запускаем инициализацию при загрузке
+        window.onload = function() {
+            initTelegramWebApp();
+        };
 
         const calendar = flatpickr("#calendar", {
             inline: true,
             defaultDate: new Date(),
             dateFormat: "d.m.Y",
+            theme: "dark",
             onChange: function(selectedDates, dateStr) {
                 if (selectedDates.length > 0) {
                     console.log("Выбрана дата:", dateStr);
                     if (window.Telegram && window.Telegram.WebApp) {
-                        window.Telegram.WebApp.sendData(dateStr); // Отправляем дату через Telegram WebApp
-                        window.Telegram.WebApp.close(); // Закрываем Web App сразу после выбора
+                        try {
+                            window.Telegram.WebApp.sendData(dateStr); // Отправляем дату через Telegram WebApp
+                            window.Telegram.WebApp.close(); // Закрываем Web App сразу после выбора
+                            console.log("Данные отправлены и Web App закрыт");
+                        } catch (error) {
+                            console.error("Ошибка при отправке данных через Telegram.WebApp:", error);
+                            alert("Ошибка при отправке даты. Пожалуйста, попробуйте снова.");
+                        }
                     } else {
                         console.error("Telegram.WebApp недоступен. Пожалуйста, откройте это в Telegram Web App.");
-                        alert("Дата выбрана: " + dateStr);
+                        alert("Дата выбрана для тестирования: " + dateStr);
                     }
                 }
             }
         });
-
-        // Для отладки в браузере (опционально)
-        /*
-        window.Telegram = {
-            WebApp: {
-                sendData: function(data) { console.log("Отправка данных:", data); },
-                close: function() { console.log("WebApp закрыт"); },
-                expand: function() { console.log("WebApp расширен"); },
-                ready: function() { console.log("WebApp готов"); }
-            }
-        };
-        */
     </script>
 </body>
 </html>
