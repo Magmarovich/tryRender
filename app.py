@@ -14,12 +14,10 @@ calendar_html = """
             background-color: #1a1a1a;
             color: #ffffff;
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
         }
         .flatpickr-calendar {
             background: #2a2a2a;
@@ -27,6 +25,11 @@ calendar_html = """
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             width: 350px;
+            margin: 0 auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .flatpickr-month {
             background: #2a2a2a;
@@ -81,48 +84,30 @@ calendar_html = """
         .flatpickr-prev-month:hover, .flatpickr-next-month:hover {
             background: #555;
         }
-        #confirm-btn {
-            margin-top: 20px;
-            padding: 12px 24px;
-            background-color: #007bff;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
-        }
-        #confirm-btn:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
     <div class="flatpickr-container">
-        <input type="text" id="calendar" placeholder="Выбери дату">
+        <div id="calendar"></div> <!-- Прямая инициализация календаря без input -->
     </div>
-    <button id="confirm-btn" disabled>Подтвердить</button>
     <script>
         let selectedDate = '';
         const calendar = flatpickr("#calendar", {
-            dateFormat: "d.m.Y",
+            inline: true, // Открываем календарь сразу, без поля ввода
             defaultDate: new Date(),
+            dateFormat: "d.m.Y",
             theme: "dark",
             onChange: function(selectedDates, dateStr) {
                 if (selectedDates.length > 0) {
                     selectedDate = dateStr;
-                    document.getElementById("confirm-btn").disabled = false;
-                    console.log("Выбрана дата (формат flatpickr):", dateStr); // Отладка формата
+                    console.log("Выбрана дата (формат flatpickr):", dateStr);
+                    if (window.Telegram && window.Telegram.WebApp) {
+                        window.Telegram.WebApp.sendData(dateStr);
+                        window.Telegram.WebApp.close();
+                    } else {
+                        console.error("Telegram.WebApp не доступен");
+                    }
                 }
-            }
-        });
-        document.getElementById("confirm-btn").addEventListener("click", function() {
-            if (selectedDate) {
-                console.log("Отправка даты (формат для бота):", selectedDate); // Отладка перед отправкой
-                window.Telegram.WebApp.sendData(selectedDate);
-                window.Telegram.WebApp.close();
-            } else {
-                console.log("Дата не выбрана");
             }
         });
         window.Telegram.WebApp.ready();
